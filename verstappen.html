@@ -1,0 +1,649 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portfólio — Max Verstappen</title>
+
+  <!-- Fonte profissional -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== Reset e base ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html,body { height: 100%; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(180deg,#05061a 0%, #07102b 60%);
+      color: #e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ===== Paleta Red Bull refinada =====
+       Azul escuro: #07102b
+       Vermelho: #e10600
+       Amarelo/dourado: #ffcc00
+       Azul claro/acento: #66d0ff
+    */
+    :root{
+      --rb-blue:#07102b;
+      --rb-red:#e10600;
+      --rb-gold:#ffcc00;
+      --rb-accent:#66d0ff;
+      --card:#0f1a33;
+      --muted:#9fb6cf;
+    }
+
+    /* ===== Navbar ===== */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:28px;
+      padding:14px 20px;
+      background: linear-gradient(90deg, rgba(225,6,0,0.95), rgba(225,6,0,0.85));
+      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+      border-bottom: 2px solid rgba(0,0,0,0.25);
+    }
+    .nav a {
+      color: #fff;
+      font-weight:600;
+      letter-spacing:0.6px;
+      transition: transform .18s ease, color .18s ease;
+    }
+    .nav a:hover { transform: translateY(-3px); color:var(--rb-gold); }
+
+    /* ===== Hero ===== */
+    header.hero {
+      height: 100vh;
+      min-height: 680px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+      padding: 40px 20px;
+      background:
+        radial-gradient(1200px 400px at 10% 20%, rgba(255,204,0,0.06), transparent 8%),
+        radial-gradient(900px 300px at 90% 80%, rgba(102,208,255,0.04), transparent 8%),
+        linear-gradient(180deg, rgba(7,16,43,0.9), rgba(5,6,26,0.9));
+    }
+
+    /* imagem hero (parallax leve) */
+    .hero__bg {
+      position:absolute;
+      inset:0;
+      background-image: url('https://www.formula1.com/content/dam/fom-website/drivers/2023Drivers/verstappen.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: saturate(.9) contrast(.9) brightness(.45);
+      transform: scale(1.06);
+      will-change: transform;
+      z-index:0;
+    }
+
+    .hero__content {
+      position:relative;
+      z-index:10;
+      max-width:1200px;
+      width:100%;
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:36px;
+      align-items:center;
+      padding: 40px;
+    }
+
+    .hero__left {
+      color:#fff;
+    }
+    .kicker {
+      display:inline-block;
+      background: linear-gradient(90deg,var(--rb-red), #ff6b6b);
+      color:#fff;
+      padding:6px 12px;
+      border-radius:999px;
+      font-weight:700;
+      letter-spacing:0.6px;
+      margin-bottom:18px;
+      box-shadow: 0 6px 18px rgba(225,6,0,0.12);
+    }
+    .hero__title {
+      font-size: clamp(36px, 5.2vw, 64px);
+      line-height:1.02;
+      font-weight:800;
+      color:var(--rb-gold);
+      text-transform:uppercase;
+      letter-spacing:2px;
+      margin-bottom:14px;
+      text-shadow: 0 6px 30px rgba(0,0,0,0.6);
+    }
+    .hero__subtitle {
+      color:var(--muted);
+      font-size: clamp(14px,1.6vw,18px);
+      margin-bottom:22px;
+      max-width: 60ch;
+    }
+
+    .hero__cta {
+      display:flex;
+      gap:14px;
+      margin-top:18px;
+    }
+    .btn {
+      padding:12px 18px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+      border: none;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .btn--primary {
+      background: linear-gradient(90deg,var(--rb-red), #ff4b4b);
+      color:#fff;
+      box-shadow: 0 10px 30px rgba(225,6,0,0.18);
+    }
+    .btn--ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.08);
+      color:var(--rb-gold);
+      box-shadow: 0 6px 18px rgba(255,204,0,0.04);
+    }
+    .btn:hover { transform: translateY(-4px); }
+
+    /* hero right card */
+    .hero__card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      padding:22px;
+      border-radius:14px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 18px 50px rgba(2,6,23,0.6);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .hero__card h4 { color:var(--rb-accent); font-weight:800; }
+    .hero__card p { color:var(--muted); font-size:14px; }
+
+    /* ===== Main sections ===== */
+    main { padding-bottom:80px; }
+
+    section {
+      padding: 72px 20px;
+      max-width:1200px;
+      margin: 0 auto;
+    }
+
+    .section__title {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:22px;
+    }
+    .section__title h2 {
+      color:var(--rb-red);
+      font-size:22px;
+      font-weight:700;
+      border-left:6px solid var(--rb-gold);
+      padding-left:12px;
+    }
+    .section__lead { color:var(--muted); margin-bottom:18px; max-width:70ch; }
+
+    /* ===== Cards grid (carreira / conquistas) ===== */
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+      gap:22px;
+      margin-top:18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.03);
+      padding:20px;
+      border-radius:12px;
+      transition: transform .36s cubic-bezier(.2,.9,.2,1), box-shadow .36s;
+      overflow:hidden;
+      position:relative;
+    }
+    .card:hover {
+      transform: translateY(-12px) rotate(-0.2deg);
+      box-shadow: 0 30px 60px rgba(2,6,23,0.6);
+    }
+    .card h3 { color:var(--rb-gold); font-size:18px; margin-bottom:8px; }
+    .card p { color:var(--muted); font-size:14px; line-height:1.5; }
+
+    /* pequeno badge */
+    .badge {
+      display:inline-block;
+      background: rgba(255,204,0,0.12);
+      color:var(--rb-gold);
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:13px;
+      border:1px solid rgba(255,204,0,0.06);
+    }
+
+    /* ===== Estatísticas animadas ===== */
+    .stats {
+      display:flex;
+      gap:18px;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+    .stat {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      padding:18px;
+      border-radius:12px;
+      min-width:180px;
+      text-align:center;
+      box-shadow: 0 12px 30px rgba(2,6,23,0.45);
+      transition: transform .4s ease;
+    }
+    .stat:hover { transform: translateY(-8px); }
+    .stat__num {
+      font-size:36px;
+      font-weight:800;
+      color:var(--rb-gold);
+      letter-spacing:1px;
+    }
+    .stat__label { color:var(--muted); font-weight:600; margin-top:6px; }
+
+    /* ===== Timeline / detalhes ===== */
+    .timeline {
+      margin-top:18px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    .timeline__item {
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+    .timeline__dot {
+      width:12px; height:12px; border-radius:50%;
+      background:var(--rb-red);
+      margin-top:6px;
+      box-shadow: 0 6px 18px rgba(225,6,0,0.18);
+    }
+    .timeline__content h4 { color:var(--rb-accent); font-weight:700; margin-bottom:6px; }
+    .timeline__content p { color:var(--muted); font-size:14px; }
+
+    /* ===== Contato ===== */
+    .contact {
+      display:flex;
+      gap:20px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+    .contact__left p { color:var(--muted); }
+    .contact__social a {
+      display:inline-block;
+      margin-left:10px;
+      background: rgba(255,255,255,0.03);
+      padding:10px 12px;
+      border-radius:10px;
+      color:var(--rb-gold);
+      font-weight:700;
+      transition: transform .18s;
+    }
+    .contact__social a:hover { transform: translateY(-6px); }
+
+    /* ===== Footer ===== */
+    footer {
+      margin-top:48px;
+      padding:28px 20px;
+      background: linear-gradient(90deg,var(--rb-red), #ff4b4b);
+      color:#fff;
+      text-align:center;
+      font-weight:700;
+      letter-spacing:0.6px;
+    }
+
+    /* ===== Scroll reveal helpers ===== */
+    .reveal { opacity:0; transform: translateY(18px) scale(.995); transition: all .9s cubic-bezier(.2,.9,.2,1); will-change: transform, opacity; }
+    .reveal.is-visible { opacity:1; transform: translateY(0) scale(1); }
+
+    /* ===== Pequenas responsividades ===== */
+    @media (max-width:1100px) {
+      .hero__content { grid-template-columns: 1fr; text-align:left; }
+      .hero__card { align-self:start; }
+    }
+    @media (max-width:720px) {
+      .nav { gap:12px; padding:10px; }
+      .hero__content { padding:20px; gap:18px; }
+      .hero__title { font-size:28px; }
+      .hero__subtitle { font-size:14px; }
+      .card h3 { font-size:16px; }
+      .stat__num { font-size:28px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="#sobre">Sobre</a>
+    <a href="#carreira">Carreira</a>
+    <a href="#conquistas">Conquistas</a>
+    <a href="#estatisticas">Estatísticas</a>
+    <a href="#contato">Contato</a>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+
+    <div class="hero__content">
+      <div class="hero__left">
+        <span class="kicker">Red Bull Racing</span>
+        <h1 class="hero__title">Max Verstappen</h1>
+        <p class="hero__subtitle">Piloto de Fórmula 1. Agilidade, precisão e consistência — múltiplos campeonatos mundiais e vitórias decisivas em pistas de todo o mundo.</p>
+
+        <div class="hero__cta">
+          <button class="btn btn--primary" onclick="scrollToSection('#conquistas')">Ver Conquistas</button>
+          <a class="btn btn--ghost" href="#contato">Entrar em contato</a>
+        </div>
+      </div>
+
+      <aside class="hero__card reveal">
+        <h4>Perfil Rápido</h4>
+        <p><strong>Nome:</strong> Max Emilian Verstappen</p>
+        <p><strong>Nascimento:</strong> 30 de setembro de 1997</p>
+        <p><strong>Equipe:</strong> Red Bull Racing</p>
+        <p style="margin-top:8px;" class="badge">Estilo: Agressivo • Técnico</p>
+      </aside>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <!-- SOBRE -->
+    <section id="sobre" class="reveal">
+      <div class="section__title">
+        <h2>Sobre</h2>
+      </div>
+      <p class="section__lead">Max Verstappen é reconhecido por sua combinação de velocidade pura, leitura de corrida e capacidade de extrair performance do carro em condições adversas. Desde a estreia precoce na F1, construiu uma trajetória marcada por vitórias, consistência e títulos mundiais.</p>
+
+      <div class="grid" style="margin-top:18px;">
+        <div class="card reveal">
+          <h3>Início</h3>
+          <p>Formado em categorias de base europeias, Max chamou atenção pela maturidade e controle em karts e monopostos, subindo rapidamente até a Fórmula 1.</p>
+        </div>
+
+        <div class="card reveal">
+          <h3>Estreia na F1</h3>
+          <p>Debutou em 2015 pela Toro Rosso e, em 2016, foi promovido à Red Bull Racing, vencendo sua primeira corrida no mesmo ano.</p>
+        </div>
+
+        <div class="card reveal">
+          <h3>Estilo de pilotagem</h3>
+          <p>Combina agressividade com precisão, excelente controle de pneus e habilidade em ultrapassagens decisivas.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARREIRA -->
+    <section id="carreira" class="reveal">
+      <div class="section__title">
+        <h2>Carreira</h2>
+      </div>
+      <p class="section__lead">Linha do tempo com marcos principais da carreira.</p>
+
+      <div class="timeline reveal">
+        <div class="timeline__item">
+          <div class="timeline__dot"></div>
+          <div class="timeline__content">
+            <h4>2015 — Estreia na F1</h4>
+            <p>Entrou na categoria pela Toro Rosso, mostrando maturidade além da idade.</p>
+          </div>
+        </div>
+
+        <div class="timeline__item">
+          <div class="timeline__dot"></div>
+          <div class="timeline__content">
+            <h4>2016 — Primeira vitória</h4>
+            <p>Promovido à Red Bull Racing e venceu o GP da Espanha, tornando-se o mais jovem vencedor da história da F1.</p>
+          </div>
+        </div>
+
+        <div class="timeline__item">
+          <div class="timeline__dot"></div>
+          <div class="timeline__content">
+            <h4>2021–2024 — Títulos Mundiais</h4>
+            <p>Conquistou múltiplos campeonatos mundiais, consolidando-se entre os melhores da era moderna.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONQUISTAS -->
+    <section id="conquistas" class="reveal">
+      <div class="section__title">
+        <h2>Conquistas</h2>
+      </div>
+      <p class="section__lead">Principais resultados e recordes.</p>
+
+      <div class="grid">
+        <div class="card reveal">
+          <h3>Campeonatos</h3>
+          <p>Campeão Mundial de Fórmula 1 em 2021, 2022, 2023 e 2024 — domínio em temporadas recentes.</p>
+        </div>
+
+        <div class="card reveal">
+          <h3>Vitórias</h3>
+          <p>Mais de 50 vitórias em Grandes Prêmios, com performances decisivas em circuitos variados.</p>
+        </div>
+
+        <div class="card reveal">
+          <h3>Poles e voltas rápidas</h3>
+          <p>Numerosas poles e voltas rápidas que demonstram velocidade pura em classificação e corrida.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESTATÍSTICAS -->
+    <section id="estatisticas" class="reveal">
+      <div class="section__title">
+        <h2>Estatísticas</h2>
+      </div>
+      <p class="section__lead">Números atualizados e animações que destacam a carreira.</p>
+
+      <div class="stats">
+        <div class="stat reveal" aria-hidden="false">
+          <div class="stat__num" id="wins">0</div>
+          <div class="stat__label">Vitórias</div>
+        </div>
+
+        <div class="stat reveal">
+          <div class="stat__num" id="titles">0</div>
+          <div class="stat__label">Títulos Mundiais</div>
+        </div>
+
+        <div class="stat reveal">
+          <div class="stat__num" id="poles">0</div>
+          <div class="stat__label">Poles</div>
+        </div>
+
+        <div class="stat reveal">
+          <div class="stat__num" id="podiums">0</div>
+          <div class="stat__label">Pódios</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DETALHES TÉCNICOS (exemplo de cards com hover e micro animações) -->
+    <section class="reveal">
+      <div class="section__title">
+        <h2>Detalhes Técnicos</h2>
+      </div>
+      <p class="section__lead">Aspectos que influenciam o desempenho: estratégia, pneus, telemetria e trabalho em equipe.</p>
+
+      <div class="grid">
+        <div class="card reveal">
+          <h3>Telemetria e análise</h3>
+          <p>Uso intensivo de dados para otimizar acerto de carro, gerenciamento de pneus e estratégia de corrida.</p>
+        </div>
+
+        <div class="card reveal">
+          <h3>Equipe e pit-stop</h3>
+          <p>Sinergia com engenheiros e mecânicos que garante execuções rápidas e confiáveis durante as corridas.</p>
+        </div>
+
+        <div class="card reveal">
+          <h3>Adaptação a condições</h3>
+          <p>Capacidade de extrair performance em pista seca, molhada e em situações de safety car.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section id="contato" class="reveal">
+      <div class="section__title">
+        <h2>Contato</h2>
+      </div>
+
+      <div class="contact">
+        <div class="contact__left">
+          <p>Para propostas, parcerias ou imprensa:</p>
+          <p style="margin-top:8px;"><strong>Email:</strong> contato@maxverstappen.com</p>
+        </div>
+
+        <div class="contact__social">
+          <a href="https://www.instagram.com/maxverstappen1" target="_blank" rel="noopener">Instagram</a>
+          <a href="#" target="_blank" rel="noopener">Twitter</a>
+          <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2026 Portfólio de Max Verstappen — Design inspirado na paleta Red Bull Racing
+  </footer>
+
+  <!-- ===== SCRIPTS: animações, contadores e reveal ===== -->
+  <script>
+    /* Smooth scroll util */
+    function scrollToSection(selector) {
+      const el = document.querySelector(selector);
+      if (!el) return;
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+    }
+
+    /* ===== Contador animado com requestAnimationFrame =====
+       Implementação robusta: suporta grandes ranges e easing suave.
+    */
+    function animateValue(id, start, end, duration, formatFn) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const startTime = performance.now();
+      const range = end - start;
+      const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+      function frame(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutCubic(progress);
+        const current = Math.round(start + range * eased);
+        el.textContent = formatFn ? formatFn(current) : current;
+        if (progress < 1) {
+          requestAnimationFrame(frame);
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    /* ===== Intersection Observer para disparar animações quando visível ===== */
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    /* ===== Disparar contadores quando a seção de estatísticas aparecer ===== */
+    const statsSection = document.getElementById('estatisticas');
+    if (statsSection) {
+      const statsObserver = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Valores reais podem ser atualizados dinamicamente via API
+            animateValue('wins', 0, 55, 2200);
+            animateValue('titles', 0, 4, 1800);
+            animateValue('poles', 0, 35, 2000);
+            animateValue('podiums', 0, 120, 2400, v => v.toLocaleString('pt-BR'));
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.25 });
+      statsObserver.observe(statsSection);
+    }
+
+    /* ===== Pequeno efeito parallax no hero background ===== */
+    (function heroParallax() {
+      const bg = document.querySelector('.hero__bg');
+      if (!bg) return;
+      let lastY = 0;
+      window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        // movimento suave e sutil
+        const translate = Math.min(scrolled * 0.08, 60);
+        if (Math.abs(translate - lastY) > 0.2) {
+          bg.style.transform = `translateY(${translate}px) scale(1.06)`;
+          lastY = translate;
+        }
+      }, { passive: true });
+    })();
+
+    /* ===== Micro-interactions: hover pulse nas estatísticas ===== */
+    document.querySelectorAll('.stat').forEach(s => {
+      s.addEventListener('mouseenter', () => s.style.transform = 'translateY(-6px) scale(1.02)');
+      s.addEventListener('mouseleave', () => s.style.transform = '');
+    });
+
+    /* ===== Ativar links de navegação com smooth scroll ===== */
+    document.querySelectorAll('.nav a').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = a.getAttribute('href');
+        if (href && href.startsWith('#')) scrollToSection(href);
+      });
+    });
+
+    /* ===== Acessibilidade: reduzir animações se preferências do usuário indicarem ===== */
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduce.matches) {
+      document.querySelectorAll('.reveal').forEach(el => {
+        el.style.transition = 'none';
+        el.classList.add('is-visible');
+      });
+      document.querySelectorAll('.stat').forEach(s => s.style.animation = 'none');
+    }
+  </script>
+</body>
+</html>
