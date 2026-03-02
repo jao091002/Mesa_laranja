@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/jao091002/Mesa_laranja/issues"
   },
-  "homepage": "https://github.com/jao091002/Mesa_laranja#readme"
+  "homepage": "https://github.com/jao091002/Mesa_laranja#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "http": "^0.0.1-security",
+    "nodemon": "^3.1.14"
+  }
 }
