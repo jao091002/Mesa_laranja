@@ -1,0 +1,20 @@
+{
+  "name": "mesa_laranja",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jao091002/Mesa_laranja.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jao091002/Mesa_laranja/issues"
+  },
+  "homepage": "https://github.com/jao091002/Mesa_laranja#readme"
+}
