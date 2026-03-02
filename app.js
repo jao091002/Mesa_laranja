@@ -1,13 +1,22 @@
-function scrollToSection(id) {
-  document.getElementById(id).scrollIntoView({
-    behavior: "smooth"
-  });
-}
+const express = require("express");
+const app = express();
 
-// Navbar efeito ao rolar
-window.addEventListener("scroll", () => {
-  const header = document.querySelector(".header");
-  header.style.background = window.scrollY > 50
-    ? "rgba(0,0,0,0.95)"
-    : "rgba(0,0,0,0.85)";
+
+app.get("/verstappen", (req, res, next) => {
+    return res.status(200).sendFile("verstappen.html", {root: './'});
+});
+app.get("/schumacher", (req, res, next) => {
+  return res.status(200).sendFile("schumacher.html", {root: './'});
+});
+app.get("/nico", (req, res, next) => {
+  return res.status(200).sendFile("nico.html", {root: './'});
+});
+
+
+
+module.exports = app;
+app.use((req, res, next)=> {
+    const error = new Error("Not found...");
+    error.status = 404;
+    next(error);
 });
