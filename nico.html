@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nico Hülkenberg | Audi F1 Official Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --audi-red: #f1c40f; /* Accent color */
+            --f1-green: #53bc28;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body, html {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            color: white;
+            font-family: "Montserrat", sans-serif;
+            overflow-x: hidden;
+        }
+
+        #canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+
+        #content-wrapper {
+            position: relative;
+            z-index: 1;
+            padding-bottom: 100px;
+        }
+
+        /* --- HEADER & HERO --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(40px, 8vw, 90px);
+            margin: 0;
+            background: linear-gradient(45deg, #fff, var(--f1-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .badge {
+            background: var(--f1-green);
+            color: black;
+            padding: 5px 15px;
+            font-weight: 900;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        /* --- TABS SYSTEM --- */
+        .tabs-container {
+            max-width: 1100px;
+            margin: -100px auto 0;
+            padding: 20px;
+            pointer-events: auto;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: -1px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tab-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            color: #aaa;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.7rem;
+            transition: 0.3s;
+            border-radius: 10px 10px 0 0;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--f1-green);
+            border-top: 2px solid var(--f1-green);
+        }
+
+        .tab-content {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 0 15px 15px 15px;
+            display: none;
+            min-height: 400px;
+        }
+
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- GRID E INFO --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-card {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--f1-green);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--f1-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .audi-section {
+            border: 1px solid #444;
+            padding: 20px;
+            margin-top: 20px;
+            background: linear-gradient(to right, rgba(0,0,0,0.8), transparent);
+        }
+
+        .audi-logo {
+            width: 80px;
+            margin-bottom: 15px;
+            filter: brightness(0) invert(1);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #444;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div id="content-wrapper">
+    <div class="hero">
+        <span class="badge">SEASON 2026</span>
+        <h1>NICO HÜLKENBERG</h1>
+        <p style="letter-spacing: 10px; color: #888;">#27 | AUDI REVOLUT F1 TEAM</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="openTab(event, 'stats')">ESTATÍSTICAS</button>
+            <button class="tab-btn" onclick="openTab(event, 'bio')">BIOGRAFIA</button>
+            <button class="tab-btn" onclick="openTab(event, 'audi')">PROJETO AUDI 2026</button>
+            <button class="tab-btn" onclick="openTab(event, 'career')">CARREIRA</button>
+        </div>
+
+        <div id="stats" class="tab-content active">
+            <h2 style="font-family: 'Syncopate'; color: var(--f1-green);">// LIVE STATS</h2>
+            <div class="info-grid">
+                <div class="stat-card"><span class="stat-number">254</span><span class="stat-label">Grand Prix Starts</span></div>
+                <div class="stat-card"><span class="stat-number">1</span><span class="stat-label">Podiums (Silverstone 2025)</span></div>
+                <div class="stat-card"><span class="stat-number">622</span><span class="stat-label">Career Points</span></div>
+                <div class="stat-card"><span class="stat-number">1</span><span class="stat-label">Pole Positions</span></div>
+                <div class="stat-card"><span class="stat-number">2</span><span class="stat-label">Fastest Laps</span></div>
+                <div class="stat-card"><span class="stat-number">1st</span><span class="stat-label">Le Mans Winner (2015)</span></div>
+            </div>
+            <p style="margin-top: 20px; color: #ccc;">Nico quebrou o recorde de maior espera por um pódio na história da F1 durante o emocionante GP da Grã-Bretanha de 2025, largando de P19 para P3.</p>
+        </div>
+
+        <div id="bio" class="tab-content">
+            <h2 style="font-family: 'Syncopate'; color: var(--f1-green);">// THE HULK</h2>
+            <p>Nicolas "Nico" Hülkenberg nasceu em 19 de agosto de 1987 em Emmerich am Rhein, Alemanha. Conhecido tecnicamente como um dos pilotos mais precisos do grid, ele é frequentemente chamado de "Super Sub" por sua habilidade de entregar resultados imediatos mesmo após hiatos fora do cockpit.</p>
+            <br>
+            <p>Fora das pistas, Nico é respeitado por sua abordagem pragmática e senso de humor. Ele é casado com Eglė Ruškytė e possui um dos currículos mais sólidos nas categorias de base (Campeão GP2, F3 Euro e A1GP).</p>
+        </div>
+
+        <div id="audi" class="tab-content">
+            <div class="audi-section">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg" class="audi-logo" alt="Audi">
+                <h2 style="font-family: 'Syncopate';">REVOLUT AUDI F1 TEAM</h2>
+                <p>Em 2026, Nico lidera a entrada histórica da **Audi** na Fórmula 1 como equipe de fábrica. Após um ano de transição na Sauber em 2025, Hülkenberg foi escolhido a dedo por Mattia Binotto para ser o pilar de experiência da marca alemã.</p>
+                <ul style="color: #aaa; line-height: 1.8;">
+                    <li><strong>Power Unit:</strong> Desenvolvida em Neuburg, Alemanha.</li>
+                    <li><strong>Companheiro:</strong> Gabriel Bortoleto (Brasil).</li>
+                    <li><strong>Foco:</strong> Desenvolvimento de chassi sob o novo regulamento técnico de 2026.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="career" class="tab-content">
+            <h2 style="font-family: 'Syncopate'; color: var(--f1-green);">// TIMELINE</h2>
+            <div style="border-left: 2px solid #333; padding-left: 20px;">
+                <p><strong>2010:</strong> Estreia na Williams - Pole Position icônica no Brasil.</p>
+                <p><strong>2012-2016:</strong> Force India/Sauber - Consistência mítica no pelotão médio.</p>
+                <p><strong>2015:</strong> Vitória nas 24 Horas de Le Mans com a Porsche.</p>
+                <p><strong>2017-2019:</strong> Renault - Liderança no desenvolvimento da equipe francesa.</p>
+                <p><strong>2023-2024:</strong> Haas - O mestre das classificações (Q3 constante).</p>
+                <p><strong>2025:</strong> Sauber - O primeiro pódio oficial na F1.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        OFFICIAL FAN EXPERIENCE | DATA: F1.COM | INTERACTIVE DESIGN 2026
+    </footer>
+</div>
+
+<script type="module">
+    import TubesCursor from "https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js"
+
+    // Inicializa o cursor animado
+    const app = TubesCursor(document.getElementById('canvas'), {
+        tubes: {
+            colors: ["#53bc28", "#f1c40f", "#ffffff"], 
+            lights: {
+                intensity: 150,
+                colors: ["#83f36e", "#f1c40f", "#ffffff"]
+            }
+        }
+    });
+
+    // Função de Troca de Abas
+    window.openTab = function(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    // Clique muda cores do cursor
+    document.body.addEventListener('click', () => {
+        app.tubes.setColors(["#ff0000", "#ffffff", "#53bc28"]);
+    });
+</script>
+
+</body>
+</html>
