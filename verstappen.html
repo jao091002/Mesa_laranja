@@ -1,649 +1,718 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portfólio — Max Verstappen</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Max Verstappen | World Champion Portfolio</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Scripts de Terceiros -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Fonte profissional -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rb-blue-dark: #02040a;
+            --rb-blue-main: #060d21;
+            --rb-red: #e10600;
+            --rb-gold: #ffcc00;
+            --rb-accent: #00e5ff;
+            --text-main: #e6eef6;
+            --text-dim: #8e9db1;
+            --card-bg: rgba(10, 20, 45, 0.7);
+            --carbon-pattern: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+        }
 
-  <style>
-    /* ===== Reset e base ===== */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html,body { height: 100%; }
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(180deg,#05061a 0%, #07102b 60%);
-      color: #e6eef6;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-x: hidden;
-    }
-    a { color: inherit; text-decoration: none; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--rb-red) var(--rb-blue-dark);
+        }
 
-    /* ===== Paleta Red Bull refinada =====
-       Azul escuro: #07102b
-       Vermelho: #e10600
-       Amarelo/dourado: #ffcc00
-       Azul claro/acento: #66d0ff
-    */
-    :root{
-      --rb-blue:#07102b;
-      --rb-red:#e10600;
-      --rb-gold:#ffcc00;
-      --rb-accent:#66d0ff;
-      --card:#0f1a33;
-      --muted:#9fb6cf;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--rb-blue-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-    /* ===== Navbar ===== */
-    .nav {
-      position: sticky;
-      top: 0;
-      z-index: 60;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:28px;
-      padding:14px 20px;
-      background: linear-gradient(90deg, rgba(225,6,0,0.95), rgba(225,6,0,0.85));
-      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
-      border-bottom: 2px solid rgba(0,0,0,0.25);
-    }
-    .nav a {
-      color: #fff;
-      font-weight:600;
-      letter-spacing:0.6px;
-      transition: transform .18s ease, color .18s ease;
-    }
-    .nav a:hover { transform: translateY(-3px); color:var(--rb-gold); }
+        /* Textura de Fundo e Luzes */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+        }
 
-    /* ===== Hero ===== */
-    header.hero {
-      height: 100vh;
-      min-height: 680px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-      overflow:hidden;
-      padding: 40px 20px;
-      background:
-        radial-gradient(1200px 400px at 10% 20%, rgba(255,204,0,0.06), transparent 8%),
-        radial-gradient(900px 300px at 90% 80%, rgba(102,208,255,0.04), transparent 8%),
-        linear-gradient(180deg, rgba(7,16,43,0.9), rgba(5,6,26,0.9));
-    }
+        .carbon-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: var(--carbon-pattern);
+            background-size: 30px 30px;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: -1;
+        }
 
-    /* imagem hero (parallax leve) */
-    .hero__bg {
-      position:absolute;
-      inset:0;
-      background-image: url('https://www.formula1.com/content/dam/fom-website/drivers/2023Drivers/verstappen.jpg');
-      background-size: cover;
-      background-position: center;
-      filter: saturate(.9) contrast(.9) brightness(.45);
-      transform: scale(1.06);
-      will-change: transform;
-      z-index:0;
-    }
+        .light-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            filter: blur(80px);
+        }
 
-    .hero__content {
-      position:relative;
-      z-index:10;
-      max-width:1200px;
-      width:100%;
-      display:grid;
-      grid-template-columns: 1fr 420px;
-      gap:36px;
-      align-items:center;
-      padding: 40px;
-    }
+        /* Tipografia */
+        h1, h2, h3, .syncopate {
+            font-family: 'Syncopate', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-    .hero__left {
-      color:#fff;
-    }
-    .kicker {
-      display:inline-block;
-      background: linear-gradient(90deg,var(--rb-red), #ff6b6b);
-      color:#fff;
-      padding:6px 12px;
-      border-radius:999px;
-      font-weight:700;
-      letter-spacing:0.6px;
-      margin-bottom:18px;
-      box-shadow: 0 6px 18px rgba(225,6,0,0.12);
-    }
-    .hero__title {
-      font-size: clamp(36px, 5.2vw, 64px);
-      line-height:1.02;
-      font-weight:800;
-      color:var(--rb-gold);
-      text-transform:uppercase;
-      letter-spacing:2px;
-      margin-bottom:14px;
-      text-shadow: 0 6px 30px rgba(0,0,0,0.6);
-    }
-    .hero__subtitle {
-      color:var(--muted);
-      font-size: clamp(14px,1.6vw,18px);
-      margin-bottom:22px;
-      max-width: 60ch;
-    }
+        /* Navbar */
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(2, 4, 10, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px 0;
+            transition: all 0.4s ease;
+        }
 
-    .hero__cta {
-      display:flex;
-      gap:14px;
-      margin-top:18px;
-    }
-    .btn {
-      padding:12px 18px;
-      border-radius:10px;
-      font-weight:700;
-      cursor:pointer;
-      border: none;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      transition: transform .18s ease, box-shadow .18s ease;
-    }
-    .btn--primary {
-      background: linear-gradient(90deg,var(--rb-red), #ff4b4b);
-      color:#fff;
-      box-shadow: 0 10px 30px rgba(225,6,0,0.18);
-    }
-    .btn--ghost {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.08);
-      color:var(--rb-gold);
-      box-shadow: 0 6px 18px rgba(255,204,0,0.04);
-    }
-    .btn:hover { transform: translateY(-4px); }
+        .nav.scrolled {
+            padding: 12px 0;
+            background: rgba(2, 4, 10, 0.95);
+        }
 
-    /* hero right card */
-    .hero__card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.04);
-      padding:22px;
-      border-radius:14px;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 18px 50px rgba(2,6,23,0.6);
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      align-items:flex-start;
-    }
-    .hero__card h4 { color:var(--rb-accent); font-weight:800; }
-    .hero__card p { color:var(--muted); font-size:14px; }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+        }
 
-    /* ===== Main sections ===== */
-    main { padding-bottom:80px; }
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--rb-gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    section {
-      padding: 72px 20px;
-      max-width:1200px;
-      margin: 0 auto;
-    }
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
 
-    .section__title {
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-bottom:22px;
-    }
-    .section__title h2 {
-      color:var(--rb-red);
-      font-size:22px;
-      font-weight:700;
-      border-left:6px solid var(--rb-gold);
-      padding-left:12px;
-    }
-    .section__lead { color:var(--muted); margin-bottom:18px; max-width:70ch; }
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            position: relative;
+            transition: color 0.3s;
+        }
 
-    /* ===== Cards grid (carreira / conquistas) ===== */
-    .grid {
-      display:grid;
-      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
-      gap:22px;
-      margin-top:18px;
-    }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--rb-red);
+            transition: width 0.3s;
+        }
 
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.03);
-      padding:20px;
-      border-radius:12px;
-      transition: transform .36s cubic-bezier(.2,.9,.2,1), box-shadow .36s;
-      overflow:hidden;
-      position:relative;
-    }
-    .card:hover {
-      transform: translateY(-12px) rotate(-0.2deg);
-      box-shadow: 0 30px 60px rgba(2,6,23,0.6);
-    }
-    .card h3 { color:var(--rb-gold); font-size:18px; margin-bottom:8px; }
-    .card p { color:var(--muted); font-size:14px; line-height:1.5; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: var(--rb-red); }
 
-    /* pequeno badge */
-    .badge {
-      display:inline-block;
-      background: rgba(255,204,0,0.12);
-      color:var(--rb-gold);
-      padding:6px 10px;
-      border-radius:999px;
-      font-weight:700;
-      font-size:13px;
-      border:1px solid rgba(255,204,0,0.06);
-    }
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0 40px;
+        }
 
-    /* ===== Estatísticas animadas ===== */
-    .stats {
-      display:flex;
-      gap:18px;
-      justify-content:space-between;
-      align-items:center;
-      margin-top:18px;
-      flex-wrap:wrap;
-    }
-    .stat {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.03);
-      padding:18px;
-      border-radius:12px;
-      min-width:180px;
-      text-align:center;
-      box-shadow: 0 12px 30px rgba(2,6,23,0.45);
-      transition: transform .4s ease;
-    }
-    .stat:hover { transform: translateY(-8px); }
-    .stat__num {
-      font-size:36px;
-      font-weight:800;
-      color:var(--rb-gold);
-      letter-spacing:1px;
-    }
-    .stat__label { color:var(--muted); font-weight:600; margin-top:6px; }
+        .hero-content {
+            z-index: 10;
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+        }
 
-    /* ===== Timeline / detalhes ===== */
-    .timeline {
-      margin-top:18px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
-    .timeline__item {
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-    }
-    .timeline__dot {
-      width:12px; height:12px; border-radius:50%;
-      background:var(--rb-red);
-      margin-top:6px;
-      box-shadow: 0 6px 18px rgba(225,6,0,0.18);
-    }
-    .timeline__content h4 { color:var(--rb-accent); font-weight:700; margin-bottom:6px; }
-    .timeline__content p { color:var(--muted); font-size:14px; }
+        .hero-text .kicker {
+            color: var(--rb-red);
+            font-weight: 800;
+            letter-spacing: 4px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: block;
+        }
 
-    /* ===== Contato ===== */
-    .contact {
-      display:flex;
-      gap:20px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      margin-top:18px;
-    }
-    .contact__left p { color:var(--muted); }
-    .contact__social a {
-      display:inline-block;
-      margin-left:10px;
-      background: rgba(255,255,255,0.03);
-      padding:10px 12px;
-      border-radius:10px;
-      color:var(--rb-gold);
-      font-weight:700;
-      transition: transform .18s;
-    }
-    .contact__social a:hover { transform: translateY(-6px); }
+        .hero-title {
+            font-size: clamp(40px, 6vw, 85px);
+            line-height: 0.9;
+            margin-bottom: 30px;
+            color: #fff;
+        }
 
-    /* ===== Footer ===== */
-    footer {
-      margin-top:48px;
-      padding:28px 20px;
-      background: linear-gradient(90deg,var(--rb-red), #ff4b4b);
-      color:#fff;
-      text-align:center;
-      font-weight:700;
-      letter-spacing:0.6px;
-    }
+        .hero-title span {
+            color: var(--rb-gold);
+            -webkit-text-stroke: 1px var(--rb-gold);
+            -webkit-text-fill-color: transparent;
+        }
 
-    /* ===== Scroll reveal helpers ===== */
-    .reveal { opacity:0; transform: translateY(18px) scale(.995); transition: all .9s cubic-bezier(.2,.9,.2,1); will-change: transform, opacity; }
-    .reveal.is-visible { opacity:1; transform: translateY(0) scale(1); }
+        .hero-description {
+            font-size: 18px;
+            color: var(--text-dim);
+            max-width: 500px;
+            margin-bottom: 40px;
+        }
 
-    /* ===== Pequenas responsividades ===== */
-    @media (max-width:1100px) {
-      .hero__content { grid-template-columns: 1fr; text-align:left; }
-      .hero__card { align-self:start; }
-    }
-    @media (max-width:720px) {
-      .nav { gap:12px; padding:10px; }
-      .hero__content { padding:20px; gap:18px; }
-      .hero__title { font-size:28px; }
-      .hero__subtitle { font-size:14px; }
-      .card h3 { font-size:16px; }
-      .stat__num { font-size:28px; }
-    }
-  </style>
+        .hero-image-container {
+            position: relative;
+            height: 600px;
+        }
+
+        .hero-image-wrapper {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .hero-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Glass Cards */
+        .section {
+            padding: 120px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .section-header h2::after {
+            content: '';
+            height: 2px;
+            flex-grow: 1;
+            background: linear-gradient(90deg, var(--rb-red), transparent);
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--rb-accent);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--rb-red);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover::before { opacity: 1; }
+
+        .stat-value {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 54px;
+            font-weight: 700;
+            color: var(--rb-gold);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .stat-label {
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            font-weight: 700;
+        }
+
+        /* Photo Gallery Interactive */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .gallery-item {
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: grayscale(40%) brightness(0.8);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+            filter: grayscale(0%) brightness(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(6, 13, 33, 0.9), transparent);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+        /* Timeline de Luxo */
+        .timeline {
+            position: relative;
+            margin-top: 60px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .timeline-date {
+            min-width: 120px;
+            font-weight: 800;
+            color: var(--rb-red);
+            font-size: 24px;
+            text-align: right;
+        }
+
+        .timeline-info {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.03);
+            flex-grow: 1;
+        }
+
+        .timeline-info h3 {
+            color: var(--rb-gold);
+            margin-bottom: 10px;
+        }
+
+        /* Botões */
+        .btn-rb {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 35px;
+            background: var(--rb-red);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 5px;
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-rb:hover {
+            background: #ff0800;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(225, 6, 0, 0.3);
+        }
+
+        footer {
+            background: var(--rb-blue-dark);
+            padding: 80px 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+            color: var(--text-main);
+        }
+
+        .social-icon:hover {
+            background: var(--rb-gold);
+            color: var(--rb-blue-dark);
+            border-color: var(--rb-gold);
+        }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-text { order: 2; }
+            .hero-image-container { order: 1; height: 400px; }
+            .hero-description { margin: 0 auto 40px; }
+            .grid-stats { grid-template-columns: repeat(2, 1fr); }
+            .gallery { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .grid-stats { grid-template-columns: 1fr; }
+            .gallery { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-  <!-- NAV -->
-  <nav class="nav">
-    <a href="#sobre">Sobre</a>
-    <a href="#carreira">Carreira</a>
-    <a href="#conquistas">Conquistas</a>
-    <a href="#estatisticas">Estatísticas</a>
-    <a href="#contato">Contato</a>
-  </nav>
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero__bg" aria-hidden="true"></div>
+    <canvas id="bg-canvas"></canvas>
+    <div class="carbon-overlay"></div>
+    <div class="light-glow" id="cursor-glow"></div>
 
-    <div class="hero__content">
-      <div class="hero__left">
-        <span class="kicker">Red Bull Racing</span>
-        <h1 class="hero__title">Max Verstappen</h1>
-        <p class="hero__subtitle">Piloto de Fórmula 1. Agilidade, precisão e consistência — múltiplos campeonatos mundiais e vitórias decisivas em pistas de todo o mundo.</p>
-
-        <div class="hero__cta">
-          <button class="btn btn--primary" onclick="scrollToSection('#conquistas')">Ver Conquistas</button>
-          <a class="btn btn--ghost" href="#contato">Entrar em contato</a>
+    <nav class="nav" id="mainNav">
+        <div class="nav-container">
+            <div class="logo">
+                <i data-lucide="trophy"></i>
+                <span>VERSTAPPEN<small>33</small></span>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Início</a>
+                <a href="#sobre">Sobre</a>
+                <a href="#stats">Estatísticas</a>
+                <a href="#carreira">Carreira</a>
+                <a href="#contato">Contato</a>
+            </div>
         </div>
-      </div>
+    </nav>
 
-      <aside class="hero__card reveal">
-        <h4>Perfil Rápido</h4>
-        <p><strong>Nome:</strong> Max Emilian Verstappen</p>
-        <p><strong>Nascimento:</strong> 30 de setembro de 1997</p>
-        <p><strong>Equipe:</strong> Red Bull Racing</p>
-        <p style="margin-top:8px;" class="badge">Estilo: Agressivo • Técnico</p>
-      </aside>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <main>
-    <!-- SOBRE -->
-    <section id="sobre" class="reveal">
-      <div class="section__title">
-        <h2>Sobre</h2>
-      </div>
-      <p class="section__lead">Max Verstappen é reconhecido por sua combinação de velocidade pura, leitura de corrida e capacidade de extrair performance do carro em condições adversas. Desde a estreia precoce na F1, construiu uma trajetória marcada por vitórias, consistência e títulos mundiais.</p>
-
-      <div class="grid" style="margin-top:18px;">
-        <div class="card reveal">
-          <h3>Início</h3>
-          <p>Formado em categorias de base europeias, Max chamou atenção pela maturidade e controle em karts e monopostos, subindo rapidamente até a Fórmula 1.</p>
+    <header class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <span class="kicker">ORACLE RED BULL RACING</span>
+                <h1 class="hero-title">MAX <br><span>VERSTAPPEN</span></h1>
+                <p class="hero-description">
+                    Tri-Campeão Mundial de Fórmula 1. Redefinindo os limites da velocidade, precisão e domínio nas pistas.
+                </p>
+                <div style="display: flex; gap: 20px;">
+                    <a href="#carreira" class="btn-rb">Explorar Carreira</a>
+                    <a href="#stats" style="color: white; align-self: center; font-weight: 600; text-decoration: none;">Ver Recordes</a>
+                </div>
+            </div>
+            <div class="hero-image-container">
+                <div class="hero-image-wrapper">
+                    <img src="Max verstappen.png" alt="Max Verstappen Helmet">
+                </div>
+            </div>
         </div>
+    </header>
 
-        <div class="card reveal">
-          <h3>Estreia na F1</h3>
-          <p>Debutou em 2015 pela Toro Rosso e, em 2016, foi promovido à Red Bull Racing, vencendo sua primeira corrida no mesmo ano.</p>
+    <section id="stats" class="section">
+        <div class="section-header">
+            <h2>Domínio em Números</h2>
         </div>
-
-        <div class="card reveal">
-          <h3>Estilo de pilotagem</h3>
-          <p>Combina agressividade com precisão, excelente controle de pneus e habilidade em ultrapassagens decisivas.</p>
+        <div class="grid-stats">
+            <div class="stat-card" data-val="61">
+                <span class="stat-value" id="val-wins">0</span>
+                <span class="stat-label">Vitórias</span>
+            </div>
+            <div class="stat-card" data-val="3">
+                <span class="stat-value" id="val-titles">0</span>
+                <span class="stat-label">Títulos Mundiais</span>
+            </div>
+            <div class="stat-card" data-val="40">
+                <span class="stat-value" id="val-poles">0</span>
+                <span class="stat-label">Pole Positions</span>
+            </div>
+            <div class="stat-card" data-val="107">
+                <span class="stat-value" id="val-podiums">0</span>
+                <span class="stat-label">Pódios</span>
+            </div>
         </div>
-      </div>
     </section>
 
-    <!-- CARREIRA -->
-    <section id="carreira" class="reveal">
-      <div class="section__title">
-        <h2>Carreira</h2>
-      </div>
-      <p class="section__lead">Linha do tempo com marcos principais da carreira.</p>
-
-      <div class="timeline reveal">
-        <div class="timeline__item">
-          <div class="timeline__dot"></div>
-          <div class="timeline__content">
-            <h4>2015 — Estreia na F1</h4>
-            <p>Entrou na categoria pela Toro Rosso, mostrando maturidade além da idade.</p>
-          </div>
+    <section id="sobre" class="section">
+        <div class="section-header">
+            <h2>A Máquina e o Homem</h2>
         </div>
-
-        <div class="timeline__item">
-          <div class="timeline__dot"></div>
-          <div class="timeline__content">
-            <h4>2016 — Primeira vitória</h4>
-            <p>Promovido à Red Bull Racing e venceu o GP da Espanha, tornando-se o mais jovem vencedor da história da F1.</p>
-          </div>
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="F1 Car Night.png" alt="F1 Car Night">
+                <div class="gallery-overlay">
+                    <h3>Precisão</h3>
+                    <p>Cada curva desenhada com perfeição cirúrgica.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="Max racing.png" alt="Max Racing">
+                <div class="gallery-overlay">
+                    <h3>Foco</h3>
+                    <p>Mentalidade de campeão sob extrema pressão.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="Racing Whell.png" alt="Racing Wheel">
+                <div class="gallery-overlay">
+                    <h3>Tecnologia</h3>
+                    <p>A sinergia perfeita entre homem e engenharia.</p>
+                </div>
+            </div>
         </div>
-
-        <div class="timeline__item">
-          <div class="timeline__dot"></div>
-          <div class="timeline__content">
-            <h4>2021–2024 — Títulos Mundiais</h4>
-            <p>Conquistou múltiplos campeonatos mundiais, consolidando-se entre os melhores da era moderna.</p>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <!-- CONQUISTAS -->
-    <section id="conquistas" class="reveal">
-      <div class="section__title">
-        <h2>Conquistas</h2>
-      </div>
-      <p class="section__lead">Principais resultados e recordes.</p>
-
-      <div class="grid">
-        <div class="card reveal">
-          <h3>Campeonatos</h3>
-          <p>Campeão Mundial de Fórmula 1 em 2021, 2022, 2023 e 2024 — domínio em temporadas recentes.</p>
+    <section id="carreira" class="section">
+        <div class="section-header">
+            <h2>Linha do Tempo</h2>
         </div>
-
-        <div class="card reveal">
-          <h3>Vitórias</h3>
-          <p>Mais de 50 vitórias em Grandes Prêmios, com performances decisivas em circuitos variados.</p>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">2015</div>
+                <div class="timeline-info">
+                    <h3>O Debutante Mais Jovem</h3>
+                    <p>Estreia na F1 com apenas 17 anos pela Toro Rosso, quebrando todos os recordes de precocidade.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2016</div>
+                <div class="timeline-info">
+                    <h3>Vitória Histórica</h3>
+                    <p>Primeira corrida pela Red Bull Racing e primeira vitória no GP da Espanha.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2021</div>
+                <div class="timeline-info">
+                    <h3>O Primeiro Título</h3>
+                    <p>Uma batalha épica decidida na última volta em Abu Dhabi, sagrando-se Campeão Mundial.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2023</div>
+                <div class="timeline-info">
+                    <h3>Domínio Absoluto</h3>
+                    <p>Temporada de recordes quebrados, vencendo 19 das 22 corridas do ano.</p>
+                </div>
+            </div>
         </div>
-
-        <div class="card reveal">
-          <h3>Poles e voltas rápidas</h3>
-          <p>Numerosas poles e voltas rápidas que demonstram velocidade pura em classificação e corrida.</p>
-        </div>
-      </div>
     </section>
 
-    <!-- ESTATÍSTICAS -->
-    <section id="estatisticas" class="reveal">
-      <div class="section__title">
-        <h2>Estatísticas</h2>
-      </div>
-      <p class="section__lead">Números atualizados e animações que destacam a carreira.</p>
-
-      <div class="stats">
-        <div class="stat reveal" aria-hidden="false">
-          <div class="stat__num" id="wins">0</div>
-          <div class="stat__label">Vitórias</div>
+    <footer id="contato">
+        <div class="logo" style="justify-content: center; margin-bottom: 30px; font-size: 32px;">
+            <span>MAX VERSTAPPEN</span>
         </div>
-
-        <div class="stat reveal">
-          <div class="stat__num" id="titles">0</div>
-          <div class="stat__label">Títulos Mundiais</div>
+        <div class="social-links">
+            <a href="#" class="social-icon"><i data-lucide="instagram"></i></a>
+            <a href="#" class="social-icon"><i data-lucide="twitter"></i></a>
+            <a href="#" class="social-icon"><i data-lucide="youtube"></i></a>
+            <a href="#" class="social-icon"><i data-lucide="mail"></i></a>
         </div>
+        <p style="color: var(--text-dim); font-size: 14px;">
+            &copy; 2026 OFFICIAL PORTFOLIO. POWERED BY RED BULL TECHNOLOGY.
+        </p>
+    </footer>
 
-        <div class="stat reveal">
-          <div class="stat__num" id="poles">0</div>
-          <div class="stat__label">Poles</div>
-        </div>
+    <script>
+        // Inicializar ícones
+        lucide.createIcons();
 
-        <div class="stat reveal">
-          <div class="stat__num" id="podiums">0</div>
-          <div class="stat__label">Pódios</div>
-        </div>
-      </div>
-    </section>
+        // Three.js Background Estelar/Partículas
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
 
-    <!-- DETALHES TÉCNICOS (exemplo de cards com hover e micro animações) -->
-    <section class="reveal">
-      <div class="section__title">
-        <h2>Detalhes Técnicos</h2>
-      </div>
-      <p class="section__lead">Aspectos que influenciam o desempenho: estratégia, pneus, telemetria e trabalho em equipe.</p>
+        const particlesGeometry = new THREE.BufferGeometry();
+        const count = 1500;
+        const positions = new Float32Array(count * 3);
 
-      <div class="grid">
-        <div class="card reveal">
-          <h3>Telemetria e análise</h3>
-          <p>Uso intensivo de dados para otimizar acerto de carro, gerenciamento de pneus e estratégia de corrida.</p>
-        </div>
-
-        <div class="card reveal">
-          <h3>Equipe e pit-stop</h3>
-          <p>Sinergia com engenheiros e mecânicos que garante execuções rápidas e confiáveis durante as corridas.</p>
-        </div>
-
-        <div class="card reveal">
-          <h3>Adaptação a condições</h3>
-          <p>Capacidade de extrair performance em pista seca, molhada e em situações de safety car.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTATO -->
-    <section id="contato" class="reveal">
-      <div class="section__title">
-        <h2>Contato</h2>
-      </div>
-
-      <div class="contact">
-        <div class="contact__left">
-          <p>Para propostas, parcerias ou imprensa:</p>
-          <p style="margin-top:8px;"><strong>Email:</strong> contato@maxverstappen.com</p>
-        </div>
-
-        <div class="contact__social">
-          <a href="https://www.instagram.com/maxverstappen1" target="_blank" rel="noopener">Instagram</a>
-          <a href="#" target="_blank" rel="noopener">Twitter</a>
-          <a href="#" target="_blank" rel="noopener">LinkedIn</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
-    &copy; 2026 Portfólio de Max Verstappen — Design inspirado na paleta Red Bull Racing
-  </footer>
-
-  <!-- ===== SCRIPTS: animações, contadores e reveal ===== -->
-  <script>
-    /* Smooth scroll util */
-    function scrollToSection(selector) {
-      const el = document.querySelector(selector);
-      if (!el) return;
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
-    }
-
-    /* ===== Contador animado com requestAnimationFrame =====
-       Implementação robusta: suporta grandes ranges e easing suave.
-    */
-    function animateValue(id, start, end, duration, formatFn) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const startTime = performance.now();
-      const range = end - start;
-      const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
-
-      function frame(now) {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = easeOutCubic(progress);
-        const current = Math.round(start + range * eased);
-        el.textContent = formatFn ? formatFn(current) : current;
-        if (progress < 1) {
-          requestAnimationFrame(frame);
+        for(let i = 0; i < count * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 10;
         }
-      }
-      requestAnimationFrame(frame);
-    }
 
-    /* ===== Intersection Observer para disparar animações quando visível ===== */
-    const revealElements = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-
-    revealElements.forEach(el => revealObserver.observe(el));
-
-    /* ===== Disparar contadores quando a seção de estatísticas aparecer ===== */
-    const statsSection = document.getElementById('estatisticas');
-    if (statsSection) {
-      const statsObserver = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            // Valores reais podem ser atualizados dinamicamente via API
-            animateValue('wins', 0, 55, 2200);
-            animateValue('titles', 0, 4, 1800);
-            animateValue('poles', 0, 35, 2000);
-            animateValue('podiums', 0, 120, 2400, v => v.toLocaleString('pt-BR'));
-            obs.unobserve(entry.target);
-          }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.005,
+            color: 0x00e5ff,
+            transparent: true,
+            opacity: 0.5
         });
-      }, { threshold: 0.25 });
-      statsObserver.observe(statsSection);
-    }
 
-    /* ===== Pequeno efeito parallax no hero background ===== */
-    (function heroParallax() {
-      const bg = document.querySelector('.hero__bg');
-      if (!bg) return;
-      let lastY = 0;
-      window.addEventListener('scroll', () => {
-        const scrolled = window.scrollY;
-        // movimento suave e sutil
-        const translate = Math.min(scrolled * 0.08, 60);
-        if (Math.abs(translate - lastY) > 0.2) {
-          bg.style.transform = `translateY(${translate}px) scale(1.06)`;
-          lastY = translate;
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        camera.position.z = 2;
+
+        // Animação Three.js
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += 0.0005;
+            renderer.render(scene, camera);
         }
-      }, { passive: true });
-    })();
+        animate();
 
-    /* ===== Micro-interactions: hover pulse nas estatísticas ===== */
-    document.querySelectorAll('.stat').forEach(s => {
-      s.addEventListener('mouseenter', () => s.style.transform = 'translateY(-6px) scale(1.02)');
-      s.addEventListener('mouseleave', () => s.style.transform = '');
-    });
+        // Mouse Move Glow
+        const glow = document.getElementById('cursor-glow');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(glow, {
+                x: e.clientX - 300,
+                y: e.clientY - 300,
+                duration: 1.5,
+                ease: "power2.out"
+            });
+        });
 
-    /* ===== Ativar links de navegação com smooth scroll ===== */
-    document.querySelectorAll('.nav a').forEach(a => {
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        const href = a.getAttribute('href');
-        if (href && href.startsWith('#')) scrollToSection(href);
-      });
-    });
+        // Scroll Effects
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
 
-    /* ===== Acessibilidade: reduzir animações se preferências do usuário indicarem ===== */
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (reduce.matches) {
-      document.querySelectorAll('.reveal').forEach(el => {
-        el.style.transition = 'none';
-        el.classList.add('is-visible');
-      });
-      document.querySelectorAll('.stat').forEach(s => s.style.animation = 'none');
-    }
-  </script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Animation
+        const heroTl = gsap.timeline();
+        heroTl.from(".hero-title", { y: 100, opacity: 0, duration: 1.2, ease: "power4.out" })
+              .from(".hero-description", { opacity: 0, y: 20, duration: 0.8 }, "-=0.8")
+              .from(".hero-image-wrapper", { scale: 0.8, opacity: 0, duration: 1.5, ease: "expo.out" }, "-=1");
+
+        // Stat Counter Animation
+        function animateStats() {
+            const stats = [
+                { id: 'val-wins', end: 61 },
+                { id: 'val-titles', end: 3 },
+                { id: 'val-poles', end: 40 },
+                { id: 'val-podiums', end: 107 }
+            ];
+
+            stats.forEach(s => {
+                const obj = { val: 0 };
+                gsap.to(obj, {
+                    val: s.end,
+                    duration: 2.5,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: "#stats",
+                        start: "top 80%"
+                    },
+                    onUpdate: function() {
+                        document.getElementById(s.id).innerHTML = Math.floor(obj.val);
+                    }
+                });
+            });
+        }
+        animateStats();
+
+        // Section Reveals
+        gsap.utils.toArray('.section-header, .stat-card, .gallery-item, .timeline-item').forEach(el => {
+            gsap.from(el, {
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 90%",
+                },
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+        });
+
+        // Resize Listener
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
 </body>
 </html>
